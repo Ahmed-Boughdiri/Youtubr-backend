@@ -1,6 +1,14 @@
 import axios from "axios";
 
-function filterVideos(res:any): any {
+interface Video {
+    title: String;
+    description: String;
+    thumbnail: String;
+    owner: String;
+    link: String;
+}
+
+function filterVideos(res:any): Video[] {
     const result:any[] = [];
     res.map((video:any) =>{
         const videoCategory = video.id.kind.split("#")[1];
@@ -19,11 +27,11 @@ function filterVideos(res:any): any {
     return result;
 }
 
-export default async function (search: String): Promise<any> {
+export default async function (search: String): Promise<Video[]> {
     const API_KEY = "AIzaSyCb5SxRZeyq9giv4Jm0b5iYa0enJzuEock";
     const API = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=100&q=${search}&key=${API_KEY}`;
     const req = await axios.get(API);
     const res = await req.data;
-    const filteredVideos:any = filterVideos(res.items);
+    const filteredVideos:Video[] = filterVideos(res.items);
     return filteredVideos;
 }

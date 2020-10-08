@@ -24,8 +24,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importStar(require("express"));
 var Search_1 = __importDefault(require("./routes/Search"));
+var Download_1 = __importDefault(require("./routes/Download"));
 var app = express_1.default();
 var PORT = 5000;
 app.listen(PORT, function () { return console.log("Server Running On Port " + PORT + " ..."); });
 app.use(express_1.json());
 app.use("/api/search", Search_1.default);
+app.use("/api/download", Download_1.default);
