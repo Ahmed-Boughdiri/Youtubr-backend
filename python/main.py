@@ -4,18 +4,14 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
-import os
+import os, sys, time
 
-def get_browser():
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    DRIVER = f"{dir_path}\chromedriver.exe"
-    browser = webdriver.Chrome(DRIVER)
-    browser.get("https://ytmp3.cc/en13/")
-    return browser
+dir_path = os.path.dirname(os.path.realpath(__file__))
+DRIVER = f"{dir_path}\chromedriver.exe"
+browser = webdriver.Chrome(DRIVER)
+browser.get("https://ytmp3.cc/en13/")
 
 def download(url):
-    browser = get_browser()
     try:
         input = WebDriverWait(browser, 10).until(
             EC.presence_of_element_located((By.ID, "input"))
@@ -29,9 +25,11 @@ def download(url):
             EC.presence_of_element_located((By.LINK_TEXT, "Download"))
         )
         print(download.get_attribute("href"))
-        # download.click()
-        time.sleep(10)
+        browser.quit()
     except:
-        print("An Error Has Occured")
+        browser.quit()
+    finally:
+        browser.quit()
 
-download("https://www.youtube.com/watch?v=iPGgnzc34tY")
+download(str(sys.argv[1]))
+
