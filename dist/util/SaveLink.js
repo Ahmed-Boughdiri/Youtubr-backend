@@ -39,41 +39,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var axios_1 = __importDefault(require("axios"));
-function filterVideos(res) {
-    var result = [];
-    res.map(function (video) {
-        var videoCategory = video.id.kind.split("#")[1];
-        var broadcasted = (video.snippet.liveBroadcastContent === "live");
-        if (videoCategory === "video" && !(broadcasted)) {
-            var videoReturned = {
-                title: video.snippet.title,
-                description: video.snippet.description,
-                thumbnail: video.snippet.thumbnails.medium.url,
-                owner: video.snippet.channelTitle,
-                link: "https://youtu.be/" + video.id.videoId
-            };
-            result.push(videoReturned);
-        }
-    });
-    return result;
-}
-function default_1(search) {
+var Link_1 = __importDefault(require("../models/Link"));
+function default_1(link, url) {
     return __awaiter(this, void 0, void 0, function () {
-        var API_KEY, API, req, res, filteredVideos;
+        var SavedLink, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    API_KEY = process.env.API_KEY || "";
-                    API = "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=100&q=" + search + "&key=" + API_KEY;
-                    return [4 /*yield*/, axios_1.default.get(API)];
+                    SavedLink = new Link_1.default({
+                        url: url,
+                        download_link: link
+                    });
+                    _a.label = 1;
                 case 1:
-                    req = _a.sent();
-                    return [4 /*yield*/, req.data];
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, SavedLink.save()];
                 case 2:
-                    res = _a.sent();
-                    filteredVideos = filterVideos(res.items);
-                    return [2 /*return*/, filteredVideos];
+                    _a.sent();
+                    return [3 /*break*/, 4];
+                case 3:
+                    err_1 = _a.sent();
+                    console.log(err_1);
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
             }
         });
     });

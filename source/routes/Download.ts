@@ -1,58 +1,33 @@
+// Importing Required Packages And Dependencies
 import express,{ Request,Response } from "express";
-import { spawn } from "child_process";
 import Link from "../models/Link";
+import isValidUrl from "../util/ValidUrl";
+import runPython from "../util/RunPython";
 
+// Initializing The Route
 const route = express.Router();
 
+// The req.body Interface
 interface Body {
     url: String
 }
 
-function isValidUrl(url: String) {
-    const suffix = url.slice(0,17);
-    if(suffix === "https://youtu.be/") return true
-    return false
-}
-
-async function saveLink(link:String, url:String) {
-    const SavedLink = new Link({
-        url: url,
-        download_link: link
-    })
-    await SavedLink.save();
-    return 
-}
-
+// The Download Route
 route.get("/", async (req:Request,res:Response) =>{
     const {
         url
     }:Body = req.body;
+    // Checking if url Value is Not Undefined, Unknown or ""
     if(!url) return res.status(400).send({ error: "URL Must Be Provided" });
+    // Checking if The Given URL is a Valid Youtube URL
     const ValidUrl = isValidUrl(url)
     if(!ValidUrl) return res.status(400).send({ error: "An Invalid URL Has Been Provided" })
+    // Checking if The Given Valid URL is Already Existed Inside The Database
     const linkExists:any = await Link.findOne({ url })
+    // If The Given Valid URL is Existed in The DB The API Will Send The Availaible Data Inside The DB Without Running The Python Script
     if(linkExists) return res.status(200).send({ url: linkExists.download_link.split('\r')[0] })
-    try {
-        const python = spawn("python" , ["C:/Youtubr/node/python/main.py",url.toString()])
-        let pythonData:String;
-        python.stdout.on("data", data =>{
-            pythonData = data.toString()
-        })
-        python.stderr.on("data", data =>{
-            console.log(data.toString())
-            res.status(500).send({ error: "An Error Has Occured, Please Try Again" })
-        })
-        python.on("close", code =>{
-            if(code === 0) {
-                const extractedUrl = pythonData.split("\n")[0];
-                res.status(200).send({ url: extractedUrl })
-                return saveLink(extractedUrl, url)
-            }
-            console.log(`Programme Exist With ${code} Code`)
-        })
-    }catch(err) {
-        res.status(500).send({ error: "An Error Has Occured" })
-    }
+    // If The Given Valid URL Doesn't Exist In The DB The Python Script Will Run And Send The Needed Data  
+    return runPython(res,url)
 })
 
 export default route;

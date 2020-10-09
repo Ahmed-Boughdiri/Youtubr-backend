@@ -40,42 +40,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
-var child_process_1 = require("child_process");
 var Link_1 = __importDefault(require("../models/Link"));
+var ValidUrl_1 = __importDefault(require("../util/ValidUrl"));
+var RunPython_1 = __importDefault(require("../util/RunPython"));
 var route = express_1.default.Router();
-function isValidUrl(url) {
-    var suffix = url.slice(0, 17);
-    if (suffix === "https://youtu.be/")
-        return true;
-    return false;
-}
-function saveLink(link, url) {
-    return __awaiter(this, void 0, void 0, function () {
-        var SavedLink;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    SavedLink = new Link_1.default({
-                        url: url,
-                        download_link: link
-                    });
-                    return [4 /*yield*/, SavedLink.save()];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
 route.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var url, ValidUrl, linkExists, python, pythonData_1;
+    var url, ValidUrl, linkExists;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 url = req.body.url;
                 if (!url)
                     return [2 /*return*/, res.status(400).send({ error: "URL Must Be Provided" })];
-                ValidUrl = isValidUrl(url);
+                ValidUrl = ValidUrl_1.default(url);
                 if (!ValidUrl)
                     return [2 /*return*/, res.status(400).send({ error: "An Invalid URL Has Been Provided" })];
                 return [4 /*yield*/, Link_1.default.findOne({ url: url })];
@@ -83,28 +60,7 @@ route.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, fu
                 linkExists = _a.sent();
                 if (linkExists)
                     return [2 /*return*/, res.status(200).send({ url: linkExists.download_link.split('\r')[0] })];
-                try {
-                    python = child_process_1.spawn("python", ["C:/Youtubr/node/python/main.py", url.toString()]);
-                    python.stdout.on("data", function (data) {
-                        pythonData_1 = data.toString();
-                    });
-                    python.stderr.on("data", function (data) {
-                        console.log(data.toString());
-                        res.status(500).send({ error: "An Error Has Occured, Please Try Again" });
-                    });
-                    python.on("close", function (code) {
-                        if (code === 0) {
-                            var extractedUrl = pythonData_1.split("\n")[0];
-                            res.status(200).send({ url: extractedUrl });
-                            return saveLink(extractedUrl, url);
-                        }
-                        console.log("Programme Exist With " + code + " Code");
-                    });
-                }
-                catch (err) {
-                    res.status(500).send({ error: "An Error Has Occured" });
-                }
-                return [2 /*return*/];
+                return [2 /*return*/, RunPython_1.default(res, url)];
         }
     });
 }); });

@@ -1,5 +1,7 @@
+// Importing Required Packages And Dependencies
 import axios from "axios";
 
+// The Video Interface
 interface Video {
     title: String;
     description: String;
@@ -8,11 +10,13 @@ interface Video {
     link: String;
 }
 
+// Process The Data To Give Back Just The Needed Data For The API
 function filterVideos(res:any): Video[] {
     const result:any[] = [];
     res.map((video:any) =>{
         const videoCategory = video.id.kind.split("#")[1];
         const broadcasted = (video.snippet.liveBroadcastContent === "live");
+        // Making Sure That The Item is Actually a Video and it's Not Currently Broadcasted
         if(videoCategory === "video" && !(broadcasted)) {
             const videoReturned = {
                 title: video.snippet.title,
@@ -27,8 +31,9 @@ function filterVideos(res:any): Video[] {
     return result;
 }
 
+// Give Back The Needed Data After Traitement
 export default async function (search: String): Promise<Video[]> {
-    const API_KEY = "AIzaSyCb5SxRZeyq9giv4Jm0b5iYa0enJzuEock";
+    const API_KEY = process.env.API_KEY || "";
     const API = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=100&q=${search}&key=${API_KEY}`;
     const req = await axios.get(API);
     const res = await req.data;
