@@ -39,7 +39,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// Importing Required Packages And Dependencies
 var Link_1 = __importDefault(require("../models/Link"));
+// This Function Handles The Saving of The Given Data Inside The Database
 function default_1(link, url) {
     return __awaiter(this, void 0, void 0, function () {
         var SavedLink, err_1;

@@ -4,6 +4,7 @@ import search from "./routes/Search";
 import download from "./routes/Download";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import cors from "cors";
 
 
 // Initializing Express
@@ -22,6 +23,7 @@ mongoose.connect(
 )
 
 // Middlewares
+app.use(cors())
 app.use(json())
 app.use("/api/search", search);
 app.use("/api/download", download);

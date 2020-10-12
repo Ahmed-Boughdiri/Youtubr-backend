@@ -39,22 +39,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// Importing Required Packages And Dependencies
 var express_1 = __importDefault(require("express"));
 var SearchYTB_1 = __importDefault(require("../util/SearchYTB"));
+// Initializing The Route
 var route = express_1.default.Router();
-route.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+// The Search Route
+route.post("/", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var search, youtube_result;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 search = req.body.search;
+                // Checking if seach Value is Not Undefined, Unknown or ""
                 if (!search)
-                    return [2 /*return*/, res.status(400).send({ error: "Search Value Must Be Provided" })];
+                    return [2 /*return*/, res.status(400).send({ error: "Search Value Must Be Provided" })
+                        // Grabing The Result From The Search Value From The Youtube API
+                    ];
                 return [4 /*yield*/, SearchYTB_1.default(search)];
             case 1:
                 youtube_result = _a.sent();
+                // Checking For Errors or Any Empty Response
                 if (!youtube_result)
                     return [2 /*return*/, res.status(400).send({ error: "There is No YouTube Music Search That Match Your Search" })];
+                // Sending Data After Traitement
                 res.status(200).send(youtube_result);
                 return [2 /*return*/];
         }

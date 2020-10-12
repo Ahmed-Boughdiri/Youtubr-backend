@@ -35,8 +35,13 @@ function filterVideos(res:any): Video[] {
 export default async function (search: String): Promise<Video[]> {
     const API_KEY = process.env.API_KEY || "";
     const API = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=100&q=${search}&key=${API_KEY}`;
-    const req = await axios.get(API);
-    const res = await req.data;
-    const filteredVideos:Video[] = filterVideos(res.items);
-    return filteredVideos;
+    try {
+        const req = await axios.get(API);
+        const res = await req.data;
+        const filteredVideos:Video[] = filterVideos(res.items);
+        return filteredVideos;
+    } catch(err) {
+        console.log(err.toString())
+        return [];
+    }
 }

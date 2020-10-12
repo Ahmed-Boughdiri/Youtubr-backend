@@ -39,27 +39,39 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// Importing Required Packages And Dependencies
 var express_1 = __importDefault(require("express"));
 var Link_1 = __importDefault(require("../models/Link"));
 var ValidUrl_1 = __importDefault(require("../util/ValidUrl"));
 var RunPython_1 = __importDefault(require("../util/RunPython"));
+// Initializing The Route
 var route = express_1.default.Router();
+// The Download Route
 route.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var url, ValidUrl, linkExists;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 url = req.body.url;
+                // Checking if url Value is Not Undefined, Unknown or ""
                 if (!url)
                     return [2 /*return*/, res.status(400).send({ error: "URL Must Be Provided" })];
                 ValidUrl = ValidUrl_1.default(url);
                 if (!ValidUrl)
-                    return [2 /*return*/, res.status(400).send({ error: "An Invalid URL Has Been Provided" })];
-                return [4 /*yield*/, Link_1.default.findOne({ url: url })];
+                    return [2 /*return*/, res.status(400).send({ error: "An Invalid URL Has Been Provided" })
+                        // Checking if The Given Valid URL is Already Existed Inside The Database
+                    ];
+                return [4 /*yield*/, Link_1.default.findOne({ url: url })
+                    // If The Given Valid URL is Existed in The DB The API Will Send The Availaible Data Inside The DB Without Running The Python Script
+                ];
             case 1:
                 linkExists = _a.sent();
+                // If The Given Valid URL is Existed in The DB The API Will Send The Availaible Data Inside The DB Without Running The Python Script
                 if (linkExists)
-                    return [2 /*return*/, res.status(200).send({ url: linkExists.download_link.split('\r')[0] })];
+                    return [2 /*return*/, res.status(200).send({ url: linkExists.download_link.split('\r')[0] })
+                        // If The Given Valid URL Doesn't Exist In The DB The Python Script Will Run And Send The Needed Data  
+                    ];
+                // If The Given Valid URL Doesn't Exist In The DB The Python Script Will Run And Send The Needed Data  
                 return [2 /*return*/, RunPython_1.default(res, url)];
         }
     });

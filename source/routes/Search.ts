@@ -11,7 +11,7 @@ interface Body {
 }
 
 // The Search Route
-route.get("/", async(req: Request, res: Response) => {
+route.post("/", async(req: Request, res: Response) => {
     const {
         search
     }:Body = req.body;
