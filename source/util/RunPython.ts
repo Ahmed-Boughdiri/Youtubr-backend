@@ -3,11 +3,12 @@ import { spawn } from "child_process";
 import { Response } from "express";
 import saveLink from "./SaveLink";
 
+
 // This Function Handls The Running Of The Python Script And The Sending Of The Data
 export default function(res:Response,url:String):void {
     try {
         // Running of The Python Script
-        const python = spawn("python" , ["C:/Youtubr/node/python/main.py",url.toString()])
+        const python = spawn("python" , ["C:/Projects/Youtubr/node/python/main.py",url.toString()])
         let pythonData:String;
         // Listening For The Given Data From The Python Script
         python.stdout.on("data", data =>{

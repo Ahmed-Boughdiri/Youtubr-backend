@@ -54,7 +54,8 @@ function filterVideos(res) {
                 description: video.snippet.description,
                 thumbnail: video.snippet.thumbnails.medium.url,
                 owner: video.snippet.channelTitle,
-                link: "https://youtu.be/" + video.id.videoId
+                link: "https://youtu.be/" + video.id.videoId,
+                displayLink: "https://www.youtube.com/embed/" + video.id.videoId
             };
             result.push(videoReturned);
         }
@@ -83,7 +84,7 @@ function default_1(search) {
                     return [2 /*return*/, filteredVideos];
                 case 4:
                     err_1 = _a.sent();
-                    console.log(err_1.toString());
+                    console.log(err_1.response.data.error.message);
                     return [2 /*return*/, []];
                 case 5: return [2 /*return*/];
             }

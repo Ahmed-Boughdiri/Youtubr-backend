@@ -10,7 +10,7 @@ var SaveLink_1 = __importDefault(require("./SaveLink"));
 function default_1(res, url) {
     try {
         // Running of The Python Script
-        var python = child_process_1.spawn("python", ["C:/Youtubr/node/python/main.py", url.toString()]);
+        var python = child_process_1.spawn("python", ["C:/Projects/Youtubr/node/python/main.py", url.toString()]);
         var pythonData_1;
         // Listening For The Given Data From The Python Script
         python.stdout.on("data", function (data) {

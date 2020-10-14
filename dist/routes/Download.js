@@ -47,7 +47,7 @@ var RunPython_1 = __importDefault(require("../util/RunPython"));
 // Initializing The Route
 var route = express_1.default.Router();
 // The Download Route
-route.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+route.post("/", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var url, ValidUrl, linkExists;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -58,9 +58,8 @@ route.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, fu
                     return [2 /*return*/, res.status(400).send({ error: "URL Must Be Provided" })];
                 ValidUrl = ValidUrl_1.default(url);
                 if (!ValidUrl)
-                    return [2 /*return*/, res.status(400).send({ error: "An Invalid URL Has Been Provided" })
-                        // Checking if The Given Valid URL is Already Existed Inside The Database
-                    ];
+                    return [2 /*return*/, res.status(400).send({ error: "An Invalid URL Has Been Provided" })];
+                console.log(url);
                 return [4 /*yield*/, Link_1.default.findOne({ url: url })
                     // If The Given Valid URL is Existed in The DB The API Will Send The Availaible Data Inside The DB Without Running The Python Script
                 ];

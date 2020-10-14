@@ -13,7 +13,7 @@ interface Body {
 }
 
 // The Download Route
-route.get("/", async (req:Request,res:Response) =>{
+route.post("/", async (req:Request,res:Response) =>{
     const {
         url
     }:Body = req.body;
@@ -22,6 +22,7 @@ route.get("/", async (req:Request,res:Response) =>{
     // Checking if The Given URL is a Valid Youtube URL
     const ValidUrl = isValidUrl(url)
     if(!ValidUrl) return res.status(400).send({ error: "An Invalid URL Has Been Provided" })
+    console.log(url)
     // Checking if The Given Valid URL is Already Existed Inside The Database
     const linkExists:any = await Link.findOne({ url })
     // If The Given Valid URL is Existed in The DB The API Will Send The Availaible Data Inside The DB Without Running The Python Script

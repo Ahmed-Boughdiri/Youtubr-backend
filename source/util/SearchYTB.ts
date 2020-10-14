@@ -23,7 +23,8 @@ function filterVideos(res:any): Video[] {
                 description: video.snippet.description,
                 thumbnail: video.snippet.thumbnails.medium.url,
                 owner: video.snippet.channelTitle,
-                link: `https://youtu.be/${video.id.videoId}`
+                link: `https://youtu.be/${video.id.videoId}`,
+                displayLink: `https://www.youtube.com/embed/${video.id.videoId}`
             }
             result.push(videoReturned);
         }
@@ -41,7 +42,7 @@ export default async function (search: String): Promise<Video[]> {
         const filteredVideos:Video[] = filterVideos(res.items);
         return filteredVideos;
     } catch(err) {
-        console.log(err.toString())
+        console.log(err.response.data.error.message)
         return [];
     }
 }
